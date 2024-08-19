@@ -15,7 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -29,6 +32,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
+    @Transactional
     @Override
     public StudentDto createNewStudent(StudentDto studentDto) {
         Student newStudent = studentRepository.save(studentMapper.fromStudentDtoToStudent(studentDto));
@@ -51,8 +55,10 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.fromStudentToStudentDto(student);
     }
 
+    @Transactional
     @Override
     public StudentDto updateStudentById(Long studentId, StudentDto studentDto) {
+
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -61,7 +67,7 @@ public class StudentServiceImpl implements StudentService {
                 );
 
         //validate student age
-        if(Objects.nonNull(studentDto.studentAge())) {
+        if (Objects.nonNull(studentDto.studentAge())) {
             if (studentDto.studentAge() < 0 || studentDto.studentAge() > 100)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Student's age must be between 1 and 100");
@@ -72,6 +78,7 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.fromStudentToStudentDto(student);
     }
 
+    @Transactional
     @Override
     public void deleteStudentById(Long studentId) {
         studentRepository.findById(studentId)
@@ -99,10 +106,10 @@ public class StudentServiceImpl implements StudentService {
         //extract the data from request map
         StudentFilter.StudentFilterBuilder studentFilterBuilder = StudentFilter.builder();
 
-        if(requestMap.containsKey("studentName"))
+        if (requestMap.containsKey("studentName"))
             studentFilterBuilder.studentName(requestMap.get("studentName").toString());
 
-        if(requestMap.containsKey("studentAge"))
+        if (requestMap.containsKey("studentAge"))
             studentFilterBuilder.studentAge(Integer.parseInt(requestMap.get("studentAge").toString()));
 
         //set default direction
@@ -127,4 +134,5 @@ public class StudentServiceImpl implements StudentService {
 
         return studentMapper.fromStudentToStudentDto(students);
     }
+
 }

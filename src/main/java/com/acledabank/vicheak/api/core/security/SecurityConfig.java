@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,7 +46,7 @@ public class SecurityConfig {
     private final KeyUtil keyUtil;
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
         provider.setUserDetailsService(userDetailsService);
@@ -61,7 +62,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChainConfig(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(
-                    // -- Swagger UI v2
+                    // Swagger UI v2
                     "/v2/api-docs",
                     "/swagger-resources",
                     "/swagger-resources/**",
@@ -69,12 +70,24 @@ public class SecurityConfig {
                     "/configuration/security",
                     "/swagger-ui.html",
                     "/webjars/**",
-                    // -- Swagger UI v3 (OpenAPI)
+                    // Swagger UI v3 (OpenAPI)
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/api/v1/auth/**",
                     "/api",
                     "/api/v1/chat").permitAll();
+
+            auth.requestMatchers(HttpMethod.POST, "/api/v1/students/**").hasAuthority("SCOPE_ADMIN");
+            auth.requestMatchers(HttpMethod.DELETE, "/api/v1/students/**").hasAuthority("SCOPE_ADMIN");
+
+            auth.requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_STAFF");
+            auth.requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
+            auth.requestMatchers(HttpMethod.POST, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
+            auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/change-password/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_STAFF");
+            auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
+            auth.requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_STAFF");
+            auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
+
             auth.anyRequest().authenticated();
         });
 
