@@ -28,6 +28,8 @@
     </scm>
     <properties>
         <java.version>17</java.version>
+        <sonar.projectKey>vicheakautomate_api_d5ef954f-0a67-401b-aeb6-251d5db1c2f1</sonar.projectKey>
+        <sonar.projectName>vicheakautomate_api</sonar.projectName>
     </properties>
     <dependencies>
         <!-- This dependency is used for unit testing JUnit -->
@@ -153,6 +155,13 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <!-- SonarQube Maven Plugin -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
             </plugin>
         </plugins>
     </build>
