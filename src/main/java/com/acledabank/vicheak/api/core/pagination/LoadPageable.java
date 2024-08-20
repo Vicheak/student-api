@@ -8,6 +8,10 @@ import java.util.Map;
 
 public class LoadPageable {
 
+    private LoadPageable(){
+
+    }
+
     public static @NonNull Pageable loadPageable(@NonNull Map<String, String> requestMap) {
         //extract dynamic content (pageNumber & pageLimit) from request map
 
