@@ -186,7 +186,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional
-    @Overri
+    @Override
     public void resetPassword(ResetPasswordDto resetPasswordDto) {
         User user = userRepository.findByEmailAndVerifiedTrueAndEnabledTrue(resetPasswordDto.email())
                 .orElseThrow(
