@@ -74,10 +74,6 @@ public class KeyUtil {
             } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
                 throw new RuntimeException(e);
             }
-        } else {
-            /*if (Arrays.asList(environment.getActiveProfiles()).contains("prod")) {
-                throw new RuntimeException("Public and private keys don't exist.");
-            }*/
         }
 
         File directory = new File("keys");
@@ -94,7 +90,6 @@ public class KeyUtil {
             keyPair = keyPairGenerator.generateKeyPair();
 
             try (FileOutputStream fos = new FileOutputStream(publicKeyPath)) {
-                //log.info("FOS : {}", fos);
                 X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyPair.getPublic().getEncoded());
                 fos.write(keySpec.getEncoded());
             }

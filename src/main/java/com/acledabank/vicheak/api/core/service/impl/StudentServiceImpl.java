@@ -67,11 +67,9 @@ public class StudentServiceImpl implements StudentService {
                 );
 
         //validate student age
-        if (Objects.nonNull(studentDto.studentAge())) {
-            if (studentDto.studentAge() < 0 || studentDto.studentAge() > 100)
+        if (Objects.nonNull(studentDto.studentAge()) && (studentDto.studentAge() < 0 || studentDto.studentAge() > 100))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Student's age must be between 1 and 100");
-        }
 
         studentMapper.fromStudentDtoToStudent(student, studentDto);
         student = studentRepository.save(student);

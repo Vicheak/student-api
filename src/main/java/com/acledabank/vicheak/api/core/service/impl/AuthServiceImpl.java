@@ -57,6 +57,8 @@ public class AuthServiceImpl implements AuthService {
         this.jwtRefreshTokenEncoder = jwtRefreshTokenEncoder;
     }
 
+    @Value("${mail.title}")
+    private String mailTitle;
     @Value("${spring.mail.username}")
     private String adminMail;
 
@@ -124,7 +126,7 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(newUser);
 
-        updateVerifiedCodeAndSendMail(newUser, "CheakAutomate Email Verification");
+        updateVerifiedCodeAndSendMail(newUser, mailTitle);
     }
 
     @Transactional
@@ -162,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPasswordToken(passwordToken);
         userRepository.save(user);
 
-        updateVerifiedCodeAndSendMail(user, "CheakAutomate Email Verification");
+        updateVerifiedCodeAndSendMail(user, mailTitle);
 
         return PasswordTokenDto.builder()
                 .message("Please check your email for verification code and verify your account to reset password!")
@@ -180,7 +182,7 @@ public class AuthServiceImpl implements AuthService {
                                         .formatted(email))
                 );
 
-        updateVerifiedCodeAndSendMail(user, "CheakAutomate Email Verification");
+        updateVerifiedCodeAndSendMail(user, mailTitle);
     }
 
     @Transactional

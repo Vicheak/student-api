@@ -86,9 +86,8 @@ public class UserServiceImpl implements UserService {
         checkSecurityOperation(user);
 
         //check email if already exist
-        if (Objects.nonNull(transactionUserDto.email()))
-            if (!transactionUserDto.email().equalsIgnoreCase(user.getEmail()) &&
-                    userRepository.existsByEmailIgnoreCase(transactionUserDto.email()))
+        if (Objects.nonNull(transactionUserDto.email()) && (!transactionUserDto.email().equalsIgnoreCase(user.getEmail()) &&
+                userRepository.existsByEmailIgnoreCase(transactionUserDto.email())))
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Email conflicts resource in the system!");
 
@@ -109,9 +108,8 @@ public class UserServiceImpl implements UserService {
 
         //check if user is an admin
         User authenticatedUser = securityContextHelper.loadAuthenticatedUser();
-        if (checkIfUserIsADMIN(authenticatedUser))
+        if (checkIfUserIsADMIN(authenticatedUser) && Objects.nonNull(transactionUserDto.roleIds()))
             //check roles if exist
-            if (Objects.nonNull(transactionUserDto.roleIds()))
                 if (transactionUserDto.roleIds().isEmpty())
                     throw new ResponseStatusException(HttpStatus.CONFLICT,
                             "User must have at least one role!");

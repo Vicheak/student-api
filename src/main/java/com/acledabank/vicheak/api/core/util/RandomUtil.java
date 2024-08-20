@@ -5,6 +5,10 @@ import java.util.Random;
 
 public class RandomUtil {
 
+    private RandomUtil(){
+
+    }
+
     public static String getRandomNumber() {
         // It will generate 6 digit random Number.
         // from 0 to 999999

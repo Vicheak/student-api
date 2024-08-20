@@ -8,22 +8,19 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -31,7 +28,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.UUID;
@@ -44,6 +40,11 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
     private final KeyUtil keyUtil;
+
+    @Value("${api.students}")
+    private String studentApiEndpoint;
+    @Value("${api.users}")
+    private String userApiEndpoint;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -77,16 +78,16 @@ public class SecurityConfig {
                     "/api",
                     "/api/v1/chat").permitAll();
 
-            auth.requestMatchers(HttpMethod.POST, "/api/v1/students/**").hasAuthority("SCOPE_ADMIN");
-            auth.requestMatchers(HttpMethod.DELETE, "/api/v1/students/**").hasAuthority("SCOPE_ADMIN");
+            auth.requestMatchers(HttpMethod.POST, studentApiEndpoint).hasAuthority(SecurityScope.ADMIN.getScope());
+            auth.requestMatchers(HttpMethod.DELETE, studentApiEndpoint).hasAuthority(SecurityScope.ADMIN.getScope());
 
-            auth.requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_STAFF");
-            auth.requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
-            auth.requestMatchers(HttpMethod.POST, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
-            auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/change-password/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_STAFF");
-            auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
-            auth.requestMatchers(HttpMethod.PATCH, "/api/v1/users/**").hasAnyAuthority("SCOPE_ADMIN", "SCOPE_STAFF");
-            auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAuthority("SCOPE_ADMIN");
+            auth.requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasAnyAuthority(SecurityScope.ADMIN.getScope(), SecurityScope.STAFF.getScope());
+            auth.requestMatchers(HttpMethod.GET, userApiEndpoint).hasAuthority(SecurityScope.ADMIN.getScope());
+            auth.requestMatchers(HttpMethod.POST, userApiEndpoint).hasAuthority(SecurityScope.ADMIN.getScope());
+            auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/change-password/**").hasAnyAuthority(SecurityScope.ADMIN.getScope(), SecurityScope.STAFF.getScope());
+            auth.requestMatchers(HttpMethod.PUT, userApiEndpoint).hasAuthority(SecurityScope.ADMIN.getScope());
+            auth.requestMatchers(HttpMethod.PATCH, userApiEndpoint).hasAnyAuthority(SecurityScope.ADMIN.getScope(), SecurityScope.STAFF.getScope());
+            auth.requestMatchers(HttpMethod.DELETE, userApiEndpoint).hasAuthority(SecurityScope.ADMIN.getScope());
 
             auth.anyRequest().authenticated();
         });
@@ -114,7 +115,7 @@ public class SecurityConfig {
 
     @Bean
     @Primary
-    public JwtDecoder jwtDecoder() throws JOSEException {
+    public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keyUtil.getAccessTokenPublicKey()).build();
     }
 
@@ -137,7 +138,7 @@ public class SecurityConfig {
     }
 
     @Bean("jwtRefreshTokenDecoder")
-    public JwtDecoder jwtRefreshTokenDecoder() throws JOSEException {
+    public JwtDecoder jwtRefreshTokenDecoder() {
         return NimbusJwtDecoder.withPublicKey(keyUtil.getRefreshTokenPublicKey()).build();
     }
 
