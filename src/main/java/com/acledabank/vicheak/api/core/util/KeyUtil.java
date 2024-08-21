@@ -1,5 +1,6 @@
 package com.acledabank.vicheak.api.core.util;
 
+import com.acledabank.vicheak.api.core.exceptionhandler.KeyManagementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -72,7 +73,7 @@ public class KeyUtil {
 
                 return keyPair;
             } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
-                throw new RuntimeException(e);
+                throw new KeyManagementException("Failed to load key pair from files", e);
             }
         }
 
@@ -100,7 +101,7 @@ public class KeyUtil {
             }
 
         } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
+            throw new KeyManagementException("Failed to load key pair from files", e);
         }
 
         return keyPair;

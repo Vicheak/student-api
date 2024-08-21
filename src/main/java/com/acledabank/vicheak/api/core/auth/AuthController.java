@@ -19,7 +19,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final String messageField = "message";
+    private final static String messageField = "message";
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/authenticate")

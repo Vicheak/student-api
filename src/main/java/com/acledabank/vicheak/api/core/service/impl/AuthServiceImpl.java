@@ -61,9 +61,9 @@ public class AuthServiceImpl implements AuthService {
     private String mailTitle;
     @Value("${spring.mail.username}")
     private String adminMail;
-    private final String scopeKey = "scope";
-    private final String issuerKey = "public";
-    private final String audienceKey = "Public Client";
+    private final static String scopeKey = "scope";
+    private final static String issuerKey = "public";
+    private final static String audienceKey = "Public Client";
 
     @Override
     public AuthResponseDto login(AuthDto authDto) {

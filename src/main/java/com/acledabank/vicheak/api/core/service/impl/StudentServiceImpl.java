@@ -32,7 +32,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
-    private final String defaultNotFoundMessage = "Student with id, %d has not been found in the system!";
+    private final static String defaultNotFoundMessage = "Student with id, %d has not been found in the system!";
 
     @Transactional
     @Override

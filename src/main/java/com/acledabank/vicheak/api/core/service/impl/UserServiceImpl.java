@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityContextHelper securityContextHelper;
 
-    private final String defaultNotFoundMessage = "User with uuid, %s has not been found in the system!";
+    private final static String defaultNotFoundMessage = "User with uuid, %s has not been found in the system!";
 
     @Transactional
     @Override
@@ -260,9 +260,9 @@ public class UserServiceImpl implements UserService {
                 if (!allExisted) {
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Role is not valid in the system! please check!");
+                } else {
+                    updateUserRolesTransaction(forUser, roleIds);
                 }
-
-                updateUserRolesTransaction(forUser, roleIds);
             }
     }
 

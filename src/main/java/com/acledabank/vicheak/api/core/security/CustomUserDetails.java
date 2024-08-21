@@ -21,7 +21,7 @@ import java.util.Set;
 @Slf4j
 public class CustomUserDetails implements UserDetails {
 
-    private User user;
+    private transient User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

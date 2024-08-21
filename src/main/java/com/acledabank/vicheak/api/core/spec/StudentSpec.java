@@ -17,7 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class StudentSpec implements Specification<Student> {
 
-    private final StudentFilter studentFilter;
+    private transient final StudentFilter studentFilter;
 
     @Override
     public Predicate toPredicate(Root<Student> studentRoot, CriteriaQuery<?> query, CriteriaBuilder cb) {
