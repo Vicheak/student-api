@@ -19,6 +19,8 @@ public class AuthController {
 
     private final AuthService authService;
 
+    private final String messageField = "message";
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/authenticate")
     public AuthResponseDto login(@RequestBody @Valid AuthDto authDto){
@@ -35,14 +37,14 @@ public class AuthController {
     @PostMapping("/register")
     public Map<String, String> register(@RequestBody @Valid RegisterDto registerDto) throws MessagingException {
         authService.register(registerDto);
-        return Map.of("message", "Please check your email for verification code!");
+        return Map.of(messageField, "Please check your email for verification code!");
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/verify")
     public Map<String, String> verify(@RequestBody @Valid VerifyDto verifyDto) {
         authService.verify(verifyDto);
-        return Map.of("message", "Congratulation! Your email has been verified...!");
+        return Map.of(messageField, "Congratulation! Your email has been verified...!");
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -55,14 +57,14 @@ public class AuthController {
     @PostMapping("/send-verification-code")
     public Map<String, String> sendVerificationCode(@RequestBody @Valid VerificationCodeDto verificationCodeDto) throws MessagingException {
         authService.sendVerificationCode(verificationCodeDto.email());
-        return Map.of("message", "Please check your email for verification code!");
+        return Map.of(messageField, "Please check your email for verification code!");
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/reset-password")
     public Map<String, String> resetPassword(@RequestBody @Valid ResetPasswordDto resetPasswordDto){
         authService.resetPassword(resetPasswordDto);
-        return Map.of("message", "Your password has been reset successfully!");
+        return Map.of(messageField, "Your password has been reset successfully!");
     }
 
 }

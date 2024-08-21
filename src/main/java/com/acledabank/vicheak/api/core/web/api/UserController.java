@@ -21,7 +21,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public BaseApi<?> createNewUser(@RequestBody @Valid TransactionUserDto transactionUserDto) {
+    public BaseApi<Object> createNewUser(@RequestBody @Valid TransactionUserDto transactionUserDto) {
 
         userService.createNewUser(transactionUserDto);
 
@@ -36,7 +36,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public BaseApi<?> loadAllUsers() {
+    public BaseApi<Object> loadAllUsers() {
 
         List<UserDto> userDtoList = userService.loadAllUsers();
 
@@ -51,7 +51,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{uuid}")
-    public BaseApi<?> loadUserByUuid(@PathVariable String uuid) {
+    public BaseApi<Object> loadUserByUuid(@PathVariable String uuid) {
 
         UserDto userDto = userService.loadUserByUuid(uuid);
 
@@ -66,7 +66,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{uuid}")
-    public BaseApi<?> updateUserByUuid(@PathVariable String uuid,
+    public BaseApi<Object> updateUserByUuid(@PathVariable String uuid,
                                        @RequestBody TransactionUserDto transactionUserDto) {
 
         userService.updateUserByUuid(uuid, transactionUserDto);
@@ -82,7 +82,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{uuid}")
-    public BaseApi<?> updateUserIsEnabledByUuid(@PathVariable String uuid,
+    public BaseApi<Object> updateUserIsEnabledByUuid(@PathVariable String uuid,
                                           @RequestBody @Valid IsEnabledDto isEnabledDto) {
 
         userService.updateUserIsEnabledByUuid(uuid, isEnabledDto.isEnabled());
@@ -98,7 +98,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{uuid}")
-    public BaseApi<?> deleteUserByUuid(@PathVariable String uuid) {
+    public BaseApi<Object> deleteUserByUuid(@PathVariable String uuid) {
 
         userService.deleteUserByUuid(uuid);
 
@@ -113,7 +113,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/me")
-    public BaseApi<?> loadUserProfile() {
+    public BaseApi<Object> loadUserProfile() {
 
         UserDto userDto = userService.loadUserProfile();
 

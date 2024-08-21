@@ -1,4 +1,4 @@
-package com.acledabank.vicheak.api.core.exception;
+package com.acledabank.vicheak.api.core.exceptionhandler;
 
 import com.acledabank.vicheak.api.core.base.BaseError;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestControllerAdvice
-public class PropertyException {
+public class PropertyHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PropertyReferenceException.class)
-    public BaseError<?> handlePropertyException(PropertyReferenceException ex) {
+    public BaseError<Object> handlePropertyException(PropertyReferenceException ex) {
         return BaseError.builder()
                 .isSuccess(false)
                 .message("Something went wrong, please check...!")

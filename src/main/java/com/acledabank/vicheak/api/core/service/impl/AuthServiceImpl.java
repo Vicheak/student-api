@@ -61,6 +61,9 @@ public class AuthServiceImpl implements AuthService {
     private String mailTitle;
     @Value("${spring.mail.username}")
     private String adminMail;
+    private final String scopeKey = "scope";
+    private final String issuerKey = "public";
+    private final String audienceKey = "Public Client";
 
     @Override
     public AuthResponseDto login(AuthDto authDto) {
@@ -95,12 +98,12 @@ public class AuthServiceImpl implements AuthService {
                 .type("Bearer")
                 .accessToken(generateAccessToken(GenerateTokenDto.builder()
                         .auth(jwt.getId())
-                        .scope(jwt.getClaimAsString("scope"))
+                        .scope(jwt.getClaimAsString(scopeKey))
                         .expiration(Instant.now().plus(1, ChronoUnit.HOURS))
                         .build()))
                 .refreshToken(generateRefreshTokenCheckDuration(GenerateTokenDto.builder()
                         .auth(jwt.getId())
-                        .scope(jwt.getClaimAsString("scope"))
+                        .scope(jwt.getClaimAsString(scopeKey))
                         .previousToken(refreshTokenDto.refreshToken())
                         .expiration(Instant.now().plus(30, ChronoUnit.DAYS))
                         .duration(Duration.between(Instant.now(), jwt.getExpiresAt()))
@@ -210,12 +213,12 @@ public class AuthServiceImpl implements AuthService {
     private String generateAccessToken(GenerateTokenDto generateTokenDto) {
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .id(generateTokenDto.auth())
-                .issuer("public")
+                .issuer(issuerKey)
                 .issuedAt(Instant.now())
                 .expiresAt(generateTokenDto.expiration())
                 .subject("Access Token")
-                .audience(List.of("Public Client"))
-                .claim("scope", generateTokenDto.scope())
+                .audience(List.of(audienceKey))
+                .claim(scopeKey, generateTokenDto.scope())
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
     }
@@ -223,12 +226,12 @@ public class AuthServiceImpl implements AuthService {
     private String generateRefreshToken(GenerateTokenDto generateTokenDto) {
         JwtClaimsSet jwtRefreshTokenClaimsSet = JwtClaimsSet.builder()
                 .id(generateTokenDto.auth())
-                .issuer("public")
+                .issuer(issuerKey)
                 .issuedAt(Instant.now())
                 .expiresAt(generateTokenDto.expiration())
                 .subject("Refresh Token")
-                .audience(List.of("Public Client"))
-                .claim("scope", generateTokenDto.scope())
+                .audience(List.of(audienceKey))
+                .claim(scopeKey, generateTokenDto.scope())
                 .build();
         return jwtRefreshTokenEncoder.encode(JwtEncoderParameters.from(jwtRefreshTokenClaimsSet)).getTokenValue();
     }
@@ -237,12 +240,12 @@ public class AuthServiceImpl implements AuthService {
         if (generateTokenDto.duration().toDays() < generateTokenDto.checkDurationNumber()) {
             JwtClaimsSet jwtRefreshTokenClaimsSet = JwtClaimsSet.builder()
                     .id(generateTokenDto.auth())
-                    .issuer("public")
+                    .issuer(issuerKey)
                     .issuedAt(Instant.now())
                     .expiresAt(generateTokenDto.expiration())
                     .subject("Refresh Token")
-                    .audience(List.of("Public Client"))
-                    .claim("scope", generateTokenDto.scope())
+                    .audience(List.of(audienceKey))
+                    .claim(scopeKey, generateTokenDto.scope())
                     .build();
             return jwtRefreshTokenEncoder.encode(JwtEncoderParameters.from(jwtRefreshTokenClaimsSet)).getTokenValue();
         }

@@ -33,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityContextHelper securityContextHelper;
 
+    private final String defaultNotFoundMessage = "User with uuid, %s has not been found in the system!";
+
     @Transactional
     @Override
     public void createNewUser(TransactionUserDto transactionUserDto) {
@@ -64,8 +66,7 @@ public class UserServiceImpl implements UserService {
     public UserDto loadUserByUuid(String uuid) {
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "User with uuid, %s has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(uuid))
                 );
 
@@ -77,8 +78,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserByUuid(String uuid, TransactionUserDto transactionUserDto) {
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "User with uuid, %s has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(uuid))
                 );
 
@@ -86,43 +86,17 @@ public class UserServiceImpl implements UserService {
         checkSecurityOperation(user);
 
         //check email if already exist
-        if (Objects.nonNull(transactionUserDto.email()) && (!transactionUserDto.email().equalsIgnoreCase(user.getEmail()) &&
-                userRepository.existsByEmailIgnoreCase(transactionUserDto.email())))
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "Email conflicts resource in the system!");
+        checkEmailValidation(transactionUserDto.email(), user.getEmail());
 
         //check phone number format and existence
-        if (Objects.nonNull(transactionUserDto.phoneNumber())) {
-            if (!FormatUtil.checkPhoneFormat(transactionUserDto.phoneNumber()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Phone Number is not in a valid format!");
-
-            if (!transactionUserDto.phoneNumber().equals(user.getPhoneNumber()) &&
-                    userRepository.existsByPhoneNumber(transactionUserDto.phoneNumber()))
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "Phone Number conflicts resource in the system!");
-        }
+        checkPhoneNumberValidation(transactionUserDto.phoneNumber(), user.getPhoneNumber());
 
         //map from dto to entity but except the null value from dto
         userMapper.fromTransactionUserDtoToUser(user, transactionUserDto);
 
         //check if user is an admin
         User authenticatedUser = securityContextHelper.loadAuthenticatedUser();
-        if (checkIfUserIsADMIN(authenticatedUser) && Objects.nonNull(transactionUserDto.roleIds()))
-            //check roles if exist
-                if (transactionUserDto.roleIds().isEmpty())
-                    throw new ResponseStatusException(HttpStatus.CONFLICT,
-                            "User must have at least one role!");
-                else {
-                    boolean allExisted = transactionUserDto.roleIds().stream()
-                            .allMatch(userTypeRepository::existsById);
-
-                    if (!allExisted)
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Role is not valid in the system! please check!");
-
-                    updateUserRolesTransaction(user, transactionUserDto.roleIds());
-                }
+        setUpRolesForUser(authenticatedUser, user, transactionUserDto.roleIds());
 
         userRepository.save(user);
     }
@@ -132,8 +106,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserIsEnabledByUuid(String uuid, Boolean isEnabled) {
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "User with uuid, %s has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(uuid))
                 );
 
@@ -147,8 +120,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUserByUuid(String uuid) {
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "User with uuid, %s has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(uuid))
                 );
 
@@ -169,8 +141,7 @@ public class UserServiceImpl implements UserService {
     public void changePassword(String uuid, ChangePasswordDto changePasswordDto) {
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "User with uuid, %s has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(uuid))
                 );
 
@@ -254,6 +225,45 @@ public class UserServiceImpl implements UserService {
         if (user.getUuid().equals(authenticatedUser.getUuid()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "This is considered self-removed operation, permission denied!");
+    }
+
+    private void checkEmailValidation(String passedEmail, String userEmail){
+        if(Objects.nonNull(passedEmail) && (!passedEmail.equalsIgnoreCase(userEmail) &&
+                userRepository.existsByEmailIgnoreCase(passedEmail)))
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Email conflicts resource in the system!");
+    }
+
+    private void checkPhoneNumberValidation(String passedPhoneNumber, String userPhoneNumber){
+        if (Objects.nonNull(passedPhoneNumber)) {
+            if (!FormatUtil.checkPhoneFormat(passedPhoneNumber))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Phone Number is not in a valid format!");
+
+            if (!passedPhoneNumber.equals(userPhoneNumber) &&
+                    userRepository.existsByPhoneNumber(passedPhoneNumber))
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Phone Number conflicts resource in the system!");
+        }
+    }
+
+    private void setUpRolesForUser(User authenticatedUser, User forUser, Set<Integer> roleIds){
+        if (checkIfUserIsADMIN(authenticatedUser) && Objects.nonNull(roleIds))
+            //check roles if exist
+            if (roleIds.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "User must have at least one role!");
+            } else {
+                boolean allExisted = roleIds.stream()
+                        .allMatch(userTypeRepository::existsById);
+
+                if (!allExisted) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Role is not valid in the system! please check!");
+                }
+
+                updateUserRolesTransaction(forUser, roleIds);
+            }
     }
 
 }

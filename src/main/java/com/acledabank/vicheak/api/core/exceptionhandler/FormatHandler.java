@@ -1,4 +1,4 @@
-package com.acledabank.vicheak.api.core.exception;
+package com.acledabank.vicheak.api.core.exceptionhandler;
 
 import com.acledabank.vicheak.api.core.base.BaseError;
 import org.springframework.http.HttpStatus;
@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestControllerAdvice
-public class FormatException {
+public class FormatHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NumberFormatException.class)
-    public BaseError<?> handleFormatException() {
+    public BaseError<Object> handleFormatException() {
         return BaseError.builder()
                 .isSuccess(false)
                 .message("Something went wrong, please check...!")

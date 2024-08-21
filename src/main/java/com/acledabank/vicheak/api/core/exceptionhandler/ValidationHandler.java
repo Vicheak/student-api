@@ -1,4 +1,4 @@
-package com.acledabank.vicheak.api.core.exception;
+package com.acledabank.vicheak.api.core.exceptionhandler;
 
 import com.acledabank.vicheak.api.core.base.BaseError;
 import com.acledabank.vicheak.api.core.base.FieldError;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
-public class ValidationException {
+public class ValidationHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public BaseError<?> handleValidationException(MethodArgumentNotValidException ex) {
+    public BaseError<Object> handleValidationException(MethodArgumentNotValidException ex) {
         List<FieldError> errors = new ArrayList<>();
 
         ex.getFieldErrors().forEach(fieldError -> errors.add(FieldError.builder()

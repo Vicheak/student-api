@@ -32,6 +32,8 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
+    private final String defaultNotFoundMessage = "Student with id, %d has not been found in the system!";
+
     @Transactional
     @Override
     public StudentDto createNewStudent(StudentDto studentDto) {
@@ -48,8 +50,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto loadStudentById(Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Student with id, %d has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(studentId))
                 );
         return studentMapper.fromStudentToStudentDto(student);
@@ -61,8 +62,7 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Student with id, %d has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(studentId))
                 );
 
@@ -79,13 +79,12 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public void deleteStudentById(Long studentId) {
-        studentRepository.findById(studentId)
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Student with id, %d has not been found in the system!"
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, defaultNotFoundMessage
                                         .formatted(studentId))
                 );
-        studentRepository.deleteById(studentId);
+        studentRepository.delete(student);
     }
 
     @Override

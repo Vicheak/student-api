@@ -1,4 +1,4 @@
-package com.acledabank.vicheak.api.core.exception;
+package com.acledabank.vicheak.api.core.exceptionhandler;
 
 import com.acledabank.vicheak.api.core.base.BaseError;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestControllerAdvice
-public class ServiceException {
+public class ServiceHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<?> handleServiceException(ResponseStatusException ex) {
+    public ResponseEntity<BaseError<Object>> handleServiceException(ResponseStatusException ex) {
         return new ResponseEntity<>(BaseError.builder()
                 .isSuccess(false)
                 .message("Something went wrong, please check...!")

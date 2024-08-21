@@ -22,11 +22,11 @@ public class RandomUtil {
     public static String randomTokenGenerator(int tokenLength) {
         // Characters allowed in the token
         final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        final SecureRandom RANDOM = new SecureRandom();
+        final SecureRandom secureRandom = new SecureRandom();
         StringBuilder token = new StringBuilder(tokenLength);
 
         for (int i = 0; i < tokenLength; i++) {
-            int index = RANDOM.nextInt(CHARACTERS.length());
+            int index = secureRandom.nextInt(CHARACTERS.length());
             token.append(CHARACTERS.charAt(index));
         }
 

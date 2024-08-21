@@ -22,7 +22,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public BaseApi<?> createNewCourse(@RequestBody @Valid StudentDto studentDto) {
+    public BaseApi<Object> createNewCourse(@RequestBody @Valid StudentDto studentDto) {
 
         studentDto = studentService.createNewStudent(studentDto);
 
@@ -37,7 +37,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public BaseApi<?> loadAllStudents() {
+    public BaseApi<Object> loadAllStudents() {
 
         List<StudentDto> studentDtoList = studentService.loadAllStudents();
 
@@ -52,7 +52,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public BaseApi<?> loadStudentByUuid(@PathVariable("id") Long studentId) {
+    public BaseApi<Object> loadStudentByUuid(@PathVariable("id") Long studentId) {
 
         StudentDto studentDto = studentService.loadStudentById(studentId);
 
@@ -67,7 +67,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public BaseApi<?> updateStudentById(@PathVariable("id") Long studentId,
+    public BaseApi<Object> updateStudentById(@PathVariable("id") Long studentId,
                                          @RequestBody StudentDto studentDto) {
 
         studentDto = studentService.updateStudentById(studentId, studentDto);
@@ -83,7 +83,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public BaseApi<?> deleteStudentId(@PathVariable("id") Long studentId) {
+    public BaseApi<Object> deleteStudentId(@PathVariable("id") Long studentId) {
 
         studentService.deleteStudentById(studentId);
 
@@ -98,7 +98,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/paginate")
-    public BaseApi<?> loadPaginatedStudents(@RequestParam(required = false) Map<String, String> requestMap) {
+    public BaseApi<Object> loadPaginatedStudents(@RequestParam(required = false) Map<String, String> requestMap) {
 
         PageDto pageDto = studentService.loadPaginatedStudents(requestMap);
 
@@ -113,7 +113,7 @@ public class StudentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/search")
-    public BaseApi<?> searchStudents(@RequestParam(required = false) Map<String, Object> requestMap) {
+    public BaseApi<Object> searchStudents(@RequestParam(required = false) Map<String, Object> requestMap) {
 
         List<StudentDto> studentDtoList = studentService.searchStudents(requestMap);
 

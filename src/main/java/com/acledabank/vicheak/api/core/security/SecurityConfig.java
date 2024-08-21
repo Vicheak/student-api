@@ -55,7 +55,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationProvider jwtAuthenticationProviderConfig() throws JOSEException {
+    public JwtAuthenticationProvider jwtAuthenticationProviderConfig() {
         return new JwtAuthenticationProvider(jwtRefreshTokenDecoder());
     }
 
