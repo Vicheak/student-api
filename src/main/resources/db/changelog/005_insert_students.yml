@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005_insert_students
+      author: suonvicheak991@gmail.com
+      changes:
+        - loadData:
+            tableName: students
+            columns:
+              - column:
+                  name: stu_id
+                  type: BIGINT
+              - column:
+                  name: stu_age
+                  type: INTEGER
+              - column:
+                  name: stu_name
+                  type: VARCHAR(100)
+            file: db/data/005_insert_students.csv

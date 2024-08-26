@@ -1,0 +1,186 @@
+databaseChangeLog:
+- changeSet:
+    id: 1724635786822-1
+    author: macbookpro (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: users_pkey
+            name: user_id
+            type: BIGINT
+        - column:
+            name: account_non_expired
+            type: BOOLEAN
+        - column:
+            name: account_non_locked
+            type: BOOLEAN
+        - column:
+            name: credentials_non_expired
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: user_email
+            type: VARCHAR(150)
+        - column:
+            name: enabled
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: user_firstname
+            type: VARCHAR(50)
+        - column:
+            constraints:
+              nullable: false
+            name: user_lastname
+            type: VARCHAR(50)
+        - column:
+            constraints:
+              nullable: false
+            name: user_password
+            type: VARCHAR(255)
+        - column:
+            name: password_token
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: user_phone
+            type: VARCHAR(20)
+        - column:
+            constraints:
+              nullable: false
+            name: user_uuid
+            type: VARCHAR(255)
+        - column:
+            name: verified
+            type: BOOLEAN
+        - column:
+            name: verified_code
+            type: VARCHAR(255)
+        tableName: users
+- changeSet:
+    id: 1724635786822-2
+    author: macbookpro (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: user_email
+        constraintName: uk33uo7vet9c79ydfuwg1w848f
+        tableName: users
+- changeSet:
+    id: 1724635786822-3
+    author: macbookpro (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: user_uuid
+        constraintName: uk4mcg6l0va97nbd8o9tqpeg104
+        tableName: users
+- changeSet:
+    id: 1724635786822-4
+    author: macbookpro (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: user_phone
+        constraintName: uk57oqbaqjqynlu1guvvc1ihudy
+        tableName: users
+- changeSet:
+    id: 1724635786822-5
+    author: macbookpro (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: students_pkey
+            name: stu_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: stu_age
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: stu_name
+            type: VARCHAR(100)
+        tableName: students
+- changeSet:
+    id: 1724635786822-6
+    author: macbookpro (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_types_pkey
+            name: user_type_id
+            type: INTEGER
+        - column:
+            name: user_type_role
+            type: VARCHAR(255)
+        tableName: user_types
+- changeSet:
+    id: 1724635786822-7
+    author: macbookpro (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: users_roles_pkey
+            name: user_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: users_roles_pkey
+            name: user_type_id
+            type: INTEGER
+        tableName: users_roles
+- changeSet:
+    id: 1724635786822-8
+    author: macbookpro (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: users_roles
+        constraintName: fk2o0jvgh89lemvvo17cbqvdxaa
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: user_id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1724635786822-9
+    author: macbookpro (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_type_id
+        baseTableName: users_roles
+        constraintName: fkski8h1vio566u5egscr3vgypb
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: user_type_id
+        referencedTableName: user_types
+        validate: true
+

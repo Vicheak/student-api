@@ -1,0 +1,2 @@
+ALTER SEQUENCE users_user_id_seq RESTART WITH 3;
+ALTER SEQUENCE students_stu_id_seq RESTART WITH 3;

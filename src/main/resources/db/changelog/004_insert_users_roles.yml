@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004_insert_users_roles
+      author: suonvicheak991@gmail.com
+      changes:
+        - loadData:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: user_type_id
+                  type: INTEGER
+            file: db/data/004_insert_users_roles.csv

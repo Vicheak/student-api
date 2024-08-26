@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003_insert_user_types
+      author: suonvicheak991@gmail.com
+      changes:
+        - loadData:
+            tableName: user_types
+            columns:
+              - column:
+                  name: user_type_id
+                  type: INTEGER
+              - column:
+                  name: user_type_role
+                  type: VARCHAR(255)
+            file: db/data/003_insert_user_types.csv

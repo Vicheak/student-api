@@ -1,0 +1,3 @@
+user_id,account_non_expired,account_non_locked,credentials_non_expired,user_email,enabled,user_firstname,user_lastname,user_password,password_token,user_phone,user_uuid,verified,verified_code
+1,true,true,true,admin@gmail.com,true,admin,admin,$2a$12$JSNU/rrrrZUq1ZOyidYIDu0Xfu6xvzhlFlFSB5dcCAPN6HvTWB82y,,017112233,c7bebb8c-e765-4f91-af2b-bdd15ee549a4,true,
+2,true,true,true,staff@gmail.com,true,staff,staff,$2a$10$QJ/JcM17W8qasE27oyX3M.TV2gum3OzYoBxD7nswWxtBcwT/Kzrbi,,012334455,9b01b080-3ac8-4430-a873-eac0c0fc289f,true,
